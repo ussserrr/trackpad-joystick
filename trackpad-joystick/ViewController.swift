@@ -10,10 +10,13 @@ import Cocoa
 
 class ViewController: NSViewController {
 
+    @IBOutlet weak var trackpadJoystick: TrackpadJoystick!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        print("\(NSScreen.main!.frame.width) x \(NSScreen.main!.frame.height)")
     }
 
     override var representedObject: Any? {

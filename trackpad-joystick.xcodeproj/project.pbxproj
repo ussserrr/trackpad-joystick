@@ -11,6 +11,7 @@
 		3AEA3EC721ED02C700580BB6 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AEA3EC621ED02C700580BB6 /* ViewController.swift */; };
 		3AEA3EC921ED02C700580BB6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3AEA3EC821ED02C700580BB6 /* Assets.xcassets */; };
 		3AEA3ECC21ED02C700580BB6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3AEA3ECA21ED02C700580BB6 /* Main.storyboard */; };
+		3AEA3ED521ED033E00580BB6 /* TrackpadJoystick.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AEA3ED421ED033E00580BB6 /* TrackpadJoystick.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -21,6 +22,7 @@
 		3AEA3ECB21ED02C700580BB6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		3AEA3ECD21ED02C700580BB6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3AEA3ECE21ED02C700580BB6 /* trackpad_joystick.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = trackpad_joystick.entitlements; sourceTree = "<group>"; };
+		3AEA3ED421ED033E00580BB6 /* TrackpadJoystick.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackpadJoystick.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,6 +55,7 @@
 		3AEA3EC321ED02C700580BB6 /* trackpad-joystick */ = {
 			isa = PBXGroup;
 			children = (
+				3AEA3ED421ED033E00580BB6 /* TrackpadJoystick.swift */,
 				3AEA3EC421ED02C700580BB6 /* AppDelegate.swift */,
 				3AEA3EC621ED02C700580BB6 /* ViewController.swift */,
 				3AEA3EC821ED02C700580BB6 /* Assets.xcassets */,
@@ -135,6 +138,7 @@
 			files = (
 				3AEA3EC721ED02C700580BB6 /* ViewController.swift in Sources */,
 				3AEA3EC521ED02C700580BB6 /* AppDelegate.swift in Sources */,
+				3AEA3ED521ED033E00580BB6 /* TrackpadJoystick.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
