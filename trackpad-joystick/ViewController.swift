@@ -2,7 +2,7 @@
 //  ViewController.swift
 //  trackpad-joystick
 //
-//  Created by Андрей Чуфырев on 14/01/2019.
+//  Created by ussserrr on 14/01/2019.
 //  Copyright © 2019 ussserrr. All rights reserved.
 //
 
@@ -16,7 +16,7 @@ class ViewController: NSViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        print("\(NSScreen.main!.frame.width) x \(NSScreen.main!.frame.height)")
+        print("Screen: \(NSScreen.main!.frame.width) x \(NSScreen.main!.frame.height)")
     }
 
     override var representedObject: Any? {

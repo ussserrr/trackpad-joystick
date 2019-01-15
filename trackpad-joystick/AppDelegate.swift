@@ -2,7 +2,7 @@
 //  AppDelegate.swift
 //  trackpad-joystick
 //
-//  Created by Андрей Чуфырев on 14/01/2019.
+//  Created by ussserrr on 14/01/2019.
 //  Copyright © 2019 ussserrr. All rights reserved.
 //
 
