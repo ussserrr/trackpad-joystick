@@ -34,6 +34,8 @@ class TrackpadJoystick: NSView {
         if !isInit {
             self.allowedTouchTypes = NSTouch.TouchTypeMask(type: NSTouch.TouchType.indirect)
 //            self.acceptsTouchEvents = true  // deprecated
+            
+            NSCursor.hide()  // hide the mouse cursor
 
             self.setFrameSize(NSSize(width: mainScreen.frame.width, height: mainScreen.frame.height))
             self.enterFullScreenMode(mainScreen, withOptions: nil)
