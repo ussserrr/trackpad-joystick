@@ -6,7 +6,10 @@
 //  Copyright © 2019 ussserrr. All rights reserved.
 //
 
+
 import Cocoa
+import Socket
+
 
 class ViewController: NSViewController {
 
@@ -17,6 +20,11 @@ class ViewController: NSViewController {
 
         // Do any additional setup after loading the view.
         print("Screen: \(NSScreen.main!.frame.width) x \(NSScreen.main!.frame.height)")
+        
+        let sock = try? Socket.create(family: .inet, type: .datagram, proto: .udp)
+        let addr = Socket.createAddress(for: "192.168.1.222", on: 1200)
+        let len = try? sock!.write(from: "Hello, World!", to: addr!)
+        sock!.close()
     }
 
     override var representedObject: Any? {

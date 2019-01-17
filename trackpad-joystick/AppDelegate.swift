@@ -6,7 +6,9 @@
 //  Copyright © 2019 ussserrr. All rights reserved.
 //
 
+
 import Cocoa
+
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
