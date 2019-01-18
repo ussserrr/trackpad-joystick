@@ -21,6 +21,7 @@ class ViewController: NSViewController {
         // Do any additional setup after loading the view.
         print("Screen: \(NSScreen.main!.frame.width) x \(NSScreen.main!.frame.height)")
         
+        // Simple UDP socket
         let sock = try? Socket.create(family: .inet, type: .datagram, proto: .udp)
         let addr = Socket.createAddress(for: "192.168.1.222", on: 1200)
         let len = try? sock!.write(from: "Hello, World!", to: addr!)

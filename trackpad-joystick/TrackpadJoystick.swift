@@ -12,16 +12,15 @@ import Cocoa
 
 class TrackpadJoystick: NSView {
     
-    // TODO: do not rely on external UI elements - define them internally instead
+    // TODO: do not rely on external UI elements - define them internally instead or remove entirely
     @IBOutlet weak var infoLabel: NSTextField!
     @IBOutlet weak var coordsLabel: NSTextField!
 
-    var isInit = false
-    
     let mainScreen = NSScreen.main!
     
     var touch = NSTouch()
     var currentTouch = NSTouch()
+    
     var acceptNewTouch = true
     var coordinatesDidUpdate = false
     
@@ -29,27 +28,27 @@ class TrackpadJoystick: NSView {
     let touchCircleColor = NSColor.blue
     
     
+    override func awakeFromNib() {
+        super.awakeFromNib()
+
+        self.allowedTouchTypes = NSTouch.TouchTypeMask(type: .indirect)
+
+        NSCursor.hide()  // hide the mouse cursor
+
+        self.setFrameSize(NSSize(width: mainScreen.frame.width, height: mainScreen.frame.height))
+//        self.enterFullScreenMode(mainScreen, withOptions: nil)
+
+        infoLabel.stringValue = "Welcome to Trackpad Joystick"
+    }
+    
+    
     override func draw(_ dirtyRect: NSRect) {
         
         // Drawing code here.
         
-        if !isInit {
-            self.allowedTouchTypes = NSTouch.TouchTypeMask(type: NSTouch.TouchType.indirect)
-//            self.acceptsTouchEvents = true  // deprecated
-            
-            NSCursor.hide()  // hide the mouse cursor
-
-            self.setFrameSize(NSSize(width: mainScreen.frame.width, height: mainScreen.frame.height))
+        // enterFullScreenMode prohibits touches if gets called from awakeFromNib so we do it from here
+        if !self.isInFullScreenMode {
             self.enterFullScreenMode(mainScreen, withOptions: nil)
-            
-//            infoLabel.setFrameSize(NSSize(width: mainScreen.frame.width, height: mainScreen.frame.height/2))
-//            infoLabel.setFrameOrigin(NSPoint(x: 0, y: mainScreen.frame.height/2))
-            infoLabel.stringValue = "Welcome to Trackpad Joystick"
-            
-//            coordsLabel.setFrameSize(NSSize(width: mainScreen.frame.width, height: mainScreen.frame.height/2))
-//            coordsLabel.setFrameOrigin(NSZeroPoint)
-            
-            isInit = true
         }
         
         if coordinatesDidUpdate {
@@ -62,6 +61,7 @@ class TrackpadJoystick: NSView {
         }
         
     }
+    
     
     override func touchesBegan(with event: NSEvent) {
         if acceptNewTouch {
@@ -107,16 +107,17 @@ class TrackpadJoystick: NSView {
     }
     
     override func touchesCancelled(with event: NSEvent) {
-        print("Touch cancelled")  // TODO: throw an exception
+        print("Touch is cancelled")  // TODO: throw an exception
     }
     
     
+    // TODO:
+    
     // log configuration
     
-    // coords { get set }
+    // coords { get }
     // or
     // func coords_get()
-    // func coords_set()
     
     
 }
