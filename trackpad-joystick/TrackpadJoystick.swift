@@ -10,6 +10,12 @@
 import Cocoa
 
 
+struct Coords {
+    var x: CGFloat = 0.0
+    var y: CGFloat = 0.0
+}
+
+
 class TrackpadJoystick: NSView {
     
     // TODO: do not rely on external UI elements - define them internally instead or remove entirely
@@ -52,10 +58,12 @@ class TrackpadJoystick: NSView {
         }
         
         if coordinatesDidUpdate {
-            coordsLabel.stringValue = "x = \(currentTouch.normalizedPosition.x)\ny = \(currentTouch.normalizedPosition.y)"
+            if let c = coords {
+                coordsLabel.stringValue = "x = \(c.x)\ny = \(c.y)"
+            }
             
             touchCircle.removeAllPoints()
-            touchCircle = NSBezierPath(ovalIn: NSRect(x: mainScreen.frame.width*currentTouch.normalizedPosition.x, y: mainScreen.frame.height*currentTouch.normalizedPosition.y, width: 25.0, height: 25.0))
+            touchCircle = NSBezierPath(ovalIn: NSRect(x: mainScreen.frame.width*currentTouch.normalizedPosition.x-12.0, y: mainScreen.frame.height*currentTouch.normalizedPosition.y-12.0, width: 24.0, height: 24.0))
             touchCircleColor.set()
             touchCircle.fill()
         }
@@ -76,7 +84,6 @@ class TrackpadJoystick: NSView {
             coordinatesDidUpdate = false
         }
 //        print("Touch \(touch.identity) began at \(touch.normalizedPosition)")
-        coordsLabel.stringValue = "x = \(touch.normalizedPosition.x)\ny = \(touch.normalizedPosition.y)"
     }
     
     override func touchesMoved(with event: NSEvent) {
@@ -89,7 +96,6 @@ class TrackpadJoystick: NSView {
             coordinatesDidUpdate = false
         }
 //        print("Touch \(currentTouch.identity) moved to \(currentTouch.normalizedPosition)")
-        coordsLabel.stringValue = "x = \(touch.normalizedPosition.x)\ny = \(touch.normalizedPosition.y)"
     }
     
     override func touchesEnded(with event: NSEvent) {
@@ -103,11 +109,22 @@ class TrackpadJoystick: NSView {
             coordinatesDidUpdate = false
         }
 //        print("Touch \(currentTouch.identity) ended at \(currentTouch.normalizedPosition)")
-        coordsLabel.stringValue = "x = \(touch.normalizedPosition.x)\ny = \(touch.normalizedPosition.y)"
     }
     
     override func touchesCancelled(with event: NSEvent) {
         print("Touch is cancelled")  // TODO: throw an exception
+    }
+    
+    
+    var coords: Coords? {
+        get {
+            if !acceptNewTouch {
+                return Coords(x: (currentTouch.normalizedPosition.x-0.5)*2.0, y: (currentTouch.normalizedPosition.y-0.5)*2.0)
+            }
+            else {
+                return nil
+            }
+        }
     }
     
     
@@ -118,6 +135,7 @@ class TrackpadJoystick: NSView {
     // coords { get }
     // or
     // func coords_get()
+    // emit some kind of event
     
     
 }
