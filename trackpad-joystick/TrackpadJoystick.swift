@@ -11,8 +11,8 @@ import Cocoa
 
 
 struct Coords {
-    var x: CGFloat = 0.0
-    var y: CGFloat = 0.0
+    var x: Float32 = 0.0
+    var y: Float32 = 0.0
 }
 
 
@@ -119,7 +119,7 @@ class TrackpadJoystick: NSView {
     var coords: Coords? {
         get {
             if !acceptNewTouch {
-                return Coords(x: (currentTouch.normalizedPosition.x-0.5)*2.0, y: (currentTouch.normalizedPosition.y-0.5)*2.0)
+                return Coords(x: Float32((currentTouch.normalizedPosition.x-0.5)*2.0), y: Float32((currentTouch.normalizedPosition.y-0.5)*2.0))
             }
             else {
                 return nil
