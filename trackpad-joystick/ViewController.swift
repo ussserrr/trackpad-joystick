@@ -24,12 +24,27 @@ class ViewController: NSViewController {
 
         // Do any additional setup after loading the view.
         
-        let t = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: self.timer_handler)
-//        t.tolerance = 0.01
-//        let t = Timer.init(timeInterval: 0.1, repeats: true, block: self.timer_handler)
-//        RunLoop.main.add(t, forMode: .common)
-
         print("Screen: \(NSScreen.main!.frame.width) x \(NSScreen.main!.frame.height)")
+        
+        // Dedicated thread to send joystick' coordinates
+        DispatchQueue.global(qos: .utility).async { [weak self] in
+            guard let self = self else {
+                return
+            }
+            
+            func timer_handler(timer: Timer) -> Void {
+                if let c = self.trackpadJoystick.coords {
+                    do {
+                        try self.sock!.write(from: [c.x, c.y], bufSize: 2*4, to: self.addr!)
+                    } catch {
+                        print(error)
+                    }
+                }
+            }
+
+            let t = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: timer_handler)
+            RunLoop.current.run()
+        }
     }
 
     override var representedObject: Any? {
@@ -38,16 +53,6 @@ class ViewController: NSViewController {
         }
     }
     
-    func timer_handler(timer: Timer) -> Void {
-        if let c = trackpadJoystick.coords {
-            do {
-                try sock!.write(from: [c.x, c.y], bufSize: 2*4, to: addr!)
-            } catch {
-                print(error)
-            }
-        }
-    }
-
 
 }
 
