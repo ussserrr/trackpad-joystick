@@ -38,21 +38,21 @@ class ViewController: NSViewController {
             var inactiveStateIsSent = false
             
             func timer_handler(timer: Timer) -> Void {
-                if let c = self.trackpadJoystick.coords {
-                    if !inactiveStateIsSent {
-                        do {
-                            try self.sock!.write(from: [c.x, c.y], bufSize: 2*MemoryLayout<Float32>.size, to: self.addr!)
-                            self.cnt += 1
-                        } catch {
-                            print(error)
-                        }
-                    }
-                    if c.x == 0.0 && c.y == 0.0 {
-                        inactiveStateIsSent = true
-                    } else {
-                        inactiveStateIsSent = false
+//                if let c = self.trackpadJoystick.coords {
+                if !inactiveStateIsSent {
+                    do {
+                        try self.sock!.write(from: [self.trackpadJoystick.coords.x, self.trackpadJoystick.coords.y], bufSize: 2*MemoryLayout<Float32>.size, to: self.addr!)
+                        self.cnt += 1
+                    } catch {
+                        print(error)
                     }
                 }
+                if self.trackpadJoystick.coords.x == 0.0 && self.trackpadJoystick.coords.y == 0.0 {
+                    inactiveStateIsSent = true
+                } else {
+                    inactiveStateIsSent = false
+                }
+//                }
             }
 
             Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: timer_handler)

@@ -28,7 +28,7 @@ class TrackpadJoystick: NSView {
     var currentTouch = NSTouch()
     
     var acceptNewTouch = true
-    var coordinatesDidUpdate = false
+    var coordinatesDidUpdate = true
     
     var touchCircle = NSBezierPath()
     let touchCircleColor = NSColor.blue
@@ -52,18 +52,18 @@ class TrackpadJoystick: NSView {
         
         // Drawing code here.
         
-        // enterFullScreenMode prohibits touches if gets called from awakeFromNib so we do it from here
+        // enterFullScreenMode prohibits touches if gets called from awakeFromNib so we do it from here as a workaround
         if !self.isInFullScreenMode {
             self.enterFullScreenMode(mainScreen, withOptions: nil)
         }
         
         if coordinatesDidUpdate {
-            if let c = coords {
-                coordsLabel.stringValue = "x = \(c.x)\ny = \(c.y)"
-            }
+//            if let c = coords {
+                coordsLabel.stringValue = "x = \(coords.x)\ny = \(coords.y)"
+//            }
             
             touchCircle.removeAllPoints()
-            touchCircle = NSBezierPath(ovalIn: NSRect(x: mainScreen.frame.width*currentTouch.normalizedPosition.x-12.0, y: mainScreen.frame.height*currentTouch.normalizedPosition.y-12.0, width: 24.0, height: 24.0))
+            touchCircle = NSBezierPath(ovalIn: NSRect(x: mainScreen.frame.width*CGFloat((coords.x/2.0)+0.5)-12.0, y: mainScreen.frame.height*CGFloat((coords.y/2.0)+0.5)-12.0, width: 24.0, height: 24.0))
             touchCircleColor.set()
             touchCircle.fill()
         }
@@ -74,13 +74,17 @@ class TrackpadJoystick: NSView {
     override func touchesBegan(with event: NSEvent) {
         if acceptNewTouch {
             touch = Array(event.touches(matching: .began, in: self))[0]
+            // rectangle, maybe change to circle
+            if ((touch.normalizedPosition.x-0.5)*2.0 < -0.2) || ((touch.normalizedPosition.x-0.5)*2.0 > 0.2) || ((touch.normalizedPosition.y-0.5)*2.0 < -0.2) || ((touch.normalizedPosition.y-0.5)*2.0 > 0.2) {
+                touch = NSTouch()  // reset an identity
+                return
+            }
             currentTouch = touch
             acceptNewTouch = false
             coordinatesDidUpdate = true
             self.needsDisplay = true
             coordsLabel.needsDisplay = true
-        }
-        else {
+        } else {
             coordinatesDidUpdate = false
         }
 //        print("Touch \(touch.identity) began at \(touch.normalizedPosition)")
@@ -91,8 +95,7 @@ class TrackpadJoystick: NSView {
         if currentTouch.identity.isEqual(touch.identity) {
             coordinatesDidUpdate = true
             self.needsDisplay = true
-        }
-        else {
+        } else {
             coordinatesDidUpdate = false
         }
 //        print("Touch \(currentTouch.identity) moved to \(currentTouch.normalizedPosition)")
@@ -104,24 +107,23 @@ class TrackpadJoystick: NSView {
             coordinatesDidUpdate = true
             acceptNewTouch = true
             self.needsDisplay = true
-        }
-        else {
+        } else {
             coordinatesDidUpdate = false
         }
 //        print("Touch \(currentTouch.identity) ended at \(currentTouch.normalizedPosition)")
     }
     
     override func touchesCancelled(with event: NSEvent) {
-        print("Touch is cancelled")  // TODO: throw an exception
+        print("Touch is cancelled")  // TODO: throw an exception, change to NSLog()
     }
     
     
-    var coords: Coords? {
+    var coords: Coords {
+        // TODO: [ ]   add methods for converting coordinates (for drawing and other tasks)
         get {
             if !acceptNewTouch {
                 return Coords(x: Float32((currentTouch.normalizedPosition.x-0.5)*2.0), y: Float32((currentTouch.normalizedPosition.y-0.5)*2.0))
-            }
-            else {
+            } else {
                 return Coords(x: 0.0, y: 0.0)
             }
         }
@@ -130,7 +132,7 @@ class TrackpadJoystick: NSView {
     
     // TODO list:
     
-    // [ ]   log configuration
+    // [ ]   configuration: on/off logs, features (at build or execution time)
     
     // [x]   coordinates getter
     // [ ]   emit some kind of event
