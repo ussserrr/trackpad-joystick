@@ -10,5 +10,6 @@ To prevent distractions when losing window focus the app is running itself in a 
 
 
 ## Installation
+ - Run `carthage update` to install [IBM-Swift/BlueSocket](https://github.com/IBM-Swift/BlueSocket)
  - Turn on network connections (Project settings -> Capabilities -> App Sandbox -> Network)
  - Create and configure UI and outlets in Interface Builder

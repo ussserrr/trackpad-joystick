@@ -122,20 +122,21 @@ class TrackpadJoystick: NSView {
                 return Coords(x: Float32((currentTouch.normalizedPosition.x-0.5)*2.0), y: Float32((currentTouch.normalizedPosition.y-0.5)*2.0))
             }
             else {
-                return nil
+                return Coords(x: 0.0, y: 0.0)
             }
         }
     }
     
     
-    // TODO:
+    // TODO list:
     
-    // log configuration
+    // [ ]   log configuration
     
-    // coords { get }
-    // or
-    // func coords_get()
-    // emit some kind of event
+    // [x]   coordinates getter
+    // [ ]   emit some kind of event
     
+    // [ ]   add non-linear scales
+    // [x]   add reset to zero position after releasing the stick
+    // [ ]   add start (zero) zone (set as radius around (0.0, 0.0))
     
 }
