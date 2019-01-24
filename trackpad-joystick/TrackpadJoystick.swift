@@ -10,15 +10,55 @@
 import Cocoa
 
 
-struct Coords {
+
+struct CenteredCoords {
+    
     var x: Float32 = 0.0
     var y: Float32 = 0.0
+    
+    
+    // Centered - default (x,y - coordinates with the origin point at the center of the trackpad [-1; 1])
+    init(x: Float32, y: Float32) {
+        assert(-1.0...1.0 ~= x && -1.0...1.0 ~= y, "both (x,y) should be in range [-1.0; 1.0], got \(x, y)")
+        self.x = x
+        self.y = y
+    }
+    
+    // Normalized (x,y - coordinates with the origin point at the bottom left corner of the trackpad [0; 1])
+    init(from normalized_x: CGFloat, from normalized_y: CGFloat) {
+        assert(0.0...1.0 ~= normalized_x && 0.0...1.0 ~= normalized_y, "both (x,y) should be in range [0.0; 1.0], got \(normalized_x, normalized_y)")
+        self.x = Float32((normalized_x-0.5)*2.0)
+        self.y = Float32((normalized_y-0.5)*2.0)
+    }
+
+    // From NSTouch (extract coordinates from NSTouch)
+    init(from touch: NSTouch) {
+        self.init(from: touch.normalizedPosition.x, from: touch.normalizedPosition.y)
+    }
+    
+    
+    func toCentered() -> (x: Float32, y: Float32) {
+        return (self.x, self.y)
+    }
+    
+    func toNormalized() -> (x: CGFloat, y: CGFloat) {
+        return (CGFloat((self.x/2.0)+0.5), CGFloat((self.y/2.0)+0.5))
+    }
+    
+    func toScreenCoordinates() -> (x: CGFloat, y: CGFloat) {
+        struct screen {
+            static let width = NSScreen.main!.frame.width
+            static let height = NSScreen.main!.frame.height
+        }
+        let (x, y) = toNormalized()
+        return (CGFloat(x)*screen.width, CGFloat(y)*screen.height)
+    }
 }
+
 
 
 class TrackpadJoystick: NSView {
     
-    // TODO: do not rely on external UI elements - define them internally instead or remove entirely
     @IBOutlet weak var infoLabel: NSTextField!
     @IBOutlet weak var coordsLabel: NSTextField!
 
@@ -33,7 +73,10 @@ class TrackpadJoystick: NSView {
     var touchCircle = NSBezierPath()
     let touchCircleColor = NSColor.blue
     
+    let stickStartPositionRadius: Float = 0.2
     
+    
+    // Initialization
     override func awakeFromNib() {
         super.awakeFromNib()
 
@@ -42,7 +85,6 @@ class TrackpadJoystick: NSView {
         NSCursor.hide()  // hide the mouse cursor
 
         self.setFrameSize(NSSize(width: mainScreen.frame.width, height: mainScreen.frame.height))
-//        self.enterFullScreenMode(mainScreen, withOptions: nil)
 
         infoLabel.stringValue = "Welcome to Trackpad Joystick"
     }
@@ -58,12 +100,11 @@ class TrackpadJoystick: NSView {
         }
         
         if coordinatesDidUpdate {
-//            if let c = coords {
-                coordsLabel.stringValue = "x = \(coords.x)\ny = \(coords.y)"
-//            }
-            
+            coordsLabel.stringValue = "x = \(centeredCoords.x)\ny = \(centeredCoords.y)"
+
+            let (x, y) = centeredCoords.toScreenCoordinates()
             touchCircle.removeAllPoints()
-            touchCircle = NSBezierPath(ovalIn: NSRect(x: mainScreen.frame.width*CGFloat((coords.x/2.0)+0.5)-12.0, y: mainScreen.frame.height*CGFloat((coords.y/2.0)+0.5)-12.0, width: 24.0, height: 24.0))
+            touchCircle = NSBezierPath(ovalIn: NSRect(x: x-12.0, y: y-12.0, width: 24.0, height: 24.0))
             touchCircleColor.set()
             touchCircle.fill()
         }
@@ -74,11 +115,14 @@ class TrackpadJoystick: NSView {
     override func touchesBegan(with event: NSEvent) {
         if acceptNewTouch {
             touch = Array(event.touches(matching: .began, in: self))[0]
-            // rectangle, maybe change to circle
-            if ((touch.normalizedPosition.x-0.5)*2.0 < -0.2) || ((touch.normalizedPosition.x-0.5)*2.0 > 0.2) || ((touch.normalizedPosition.y-0.5)*2.0 < -0.2) || ((touch.normalizedPosition.y-0.5)*2.0 > 0.2) {
+
+            // Stick start zone - circle
+            let (x, y) = CenteredCoords(from: touch).toCentered()
+            if pow(x, 2) + pow(y, 2) > pow(stickStartPositionRadius, 2) {
                 touch = NSTouch()  // reset an identity
                 return
             }
+            
             currentTouch = touch
             acceptNewTouch = false
             coordinatesDidUpdate = true
@@ -114,17 +158,16 @@ class TrackpadJoystick: NSView {
     }
     
     override func touchesCancelled(with event: NSEvent) {
-        print("Touch is cancelled")  // TODO: throw an exception, change to NSLog()
+        print("Touch is cancelled")  // TODO: [ ]   throw an exception, change to NSLog()
     }
     
     
-    var coords: Coords {
-        // TODO: [ ]   add methods for converting coordinates (for drawing and other tasks)
+    var centeredCoords: CenteredCoords {
         get {
             if !acceptNewTouch {
-                return Coords(x: Float32((currentTouch.normalizedPosition.x-0.5)*2.0), y: Float32((currentTouch.normalizedPosition.y-0.5)*2.0))
+                return CenteredCoords(from: currentTouch)
             } else {
-                return Coords(x: 0.0, y: 0.0)
+                return CenteredCoords(x: 0.0, y: 0.0)
             }
         }
     }
@@ -132,13 +175,14 @@ class TrackpadJoystick: NSView {
     
     // TODO list:
     
-    // [ ]   configuration: on/off logs, features (at build or execution time)
-    
+    // [ ]   do not rely on external UI elements - define them internally instead or remove entirely
+    // [ ]   configuration: on/off logs, features (at build and/or execution time)
+    // [ ]   animate using Core Animation
     // [x]   coordinates getter
     // [ ]   emit some kind of event
-    
+    // [x]   add methods for converting coordinates (for drawing and other tasks)
     // [ ]   add non-linear scales
     // [x]   add reset to zero position after releasing the stick
-    // [ ]   add start (zero) zone (set as radius around (0.0, 0.0))
+    // [x]   add start (zero) zone (set as radius around (0.0, 0.0))
     
 }
