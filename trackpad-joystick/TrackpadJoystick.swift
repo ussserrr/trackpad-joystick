@@ -8,6 +8,7 @@
 
 
 import Cocoa
+import os
 
 
 
@@ -166,7 +167,8 @@ class TrackpadJoystick: NSView {
             coordinatesDidUpdate = false
         }
         
-        NSLog("Touch \(touch.identity) began at \(touch.normalizedPosition)")
+        let debugString = "Touch \(touch.identity) began at \(touch.normalizedPosition)"
+        os_log(OSLogType.default, "%s", debugString)
     }
     
     override func touchesMoved(with event: NSEvent) {
@@ -177,7 +179,9 @@ class TrackpadJoystick: NSView {
         } else {
             coordinatesDidUpdate = false
         }
-        NSLog("Touch \(currentTouch.identity) moved to \(currentTouch.normalizedPosition)")
+
+        let debugString = "Touch \(currentTouch.identity) moved to \(currentTouch.normalizedPosition)"
+        os_log(OSLogType.default, "%s", debugString)
     }
     
     override func touchesEnded(with event: NSEvent) {
@@ -189,13 +193,17 @@ class TrackpadJoystick: NSView {
         } else {
             coordinatesDidUpdate = false
         }
-        NSLog("Touch \(currentTouch.identity) ended at \(currentTouch.normalizedPosition)")
+
+        let debugString = "Touch \(currentTouch.identity) ended at \(currentTouch.normalizedPosition)"
+        os_log(OSLogType.default, "%s", debugString)
     }
     
     // We do not expect the occurrence of this event during normal operation
     override func touchesCancelled(with event: NSEvent) {
-        NSLog("Touch \(Array(event.touches(matching: .cancelled, in: self))[0].identity) was cancelled")
         state = .touchWasCancelled
+
+        let debugString = "Touch \(Array(event.touches(matching: .cancelled, in: self))[0].identity) was cancelled"
+        os_log(OSLogType.error, "%s", debugString)
     }
     
     
@@ -217,7 +225,7 @@ class TrackpadJoystick: NSView {
     
     // [ ]   do not rely on any external UI elements - define them internally instead or remove entirely
     // [ ]   animate using Core Animation
-    // [ ]   configuration: on/off logs, features (at build and/or execution time)
+    // [x]   configuration: on/off logs
     // [x]   coordinates getter
     // [x]   add methods for converting coordinates (for drawing and other tasks)
     // [x]   add reset to zero position after releasing the stick

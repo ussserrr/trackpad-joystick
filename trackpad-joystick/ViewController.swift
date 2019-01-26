@@ -8,12 +8,13 @@
 
 
 import Cocoa
+import os
 import Socket  // IBM-BlueSocket library (via Carthage)
 
 
 class ViewController: NSViewController {
 
-    @IBOutlet weak var trackpadJoystick: TrackpadJoystick!
+    @IBOutlet weak var trackpadJoystick: TrackpadJoystick?
     
     // TODO: [x] add checks for all optionals
     let sock: Socket? = try? Socket.create(family: .inet, type: .datagram, proto: .udp)
@@ -27,16 +28,17 @@ class ViewController: NSViewController {
 
         // Do any additional setup after loading the view.
         
+        // Unwrap the optionals
         guard let sock = self.sock else {
-            NSLog("Cannot create a socket")
+            os_log(OSLogType.fault, "Cannot create a socket")
             return
         }
         guard let addr = self.addr else {
-            NSLog("Cannot create an address")
+            os_log(OSLogType.fault, "Cannot create an address")
             return
         }
         guard let trackpadJoystick = self.trackpadJoystick else {
-            NSLog("No TrackpadJoystick instance is present")
+            os_log(OSLogType.fault, "No TrackpadJoystick instance is present")
             return
         }
         
@@ -55,7 +57,9 @@ class ViewController: NSViewController {
                         try sock.write(from: [c.x, c.y], bufSize: 2*MemoryLayout<Float32>.size, to: addr)
                         self.pointsWereSentCounter += 1
                     } catch {
-                        NSLog("\(error)")
+                        // Need this as error.localizedDescription doesn't contain useful information
+                        let errorString = "\(error)"
+                        os_log(OSLogType.error, "%s", errorString)
                         return
                     }
                 }
@@ -69,7 +73,7 @@ class ViewController: NSViewController {
     
     
     override func viewDidDisappear() {
-        NSLog("Points sent: \(self.pointsWereSentCounter)")
+        os_log(OSLogType.debug, "Points sent: %d", self.pointsWereSentCounter)
         super.viewDidDisappear()
     }
 
