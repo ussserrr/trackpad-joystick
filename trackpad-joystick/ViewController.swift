@@ -16,7 +16,6 @@ class ViewController: NSViewController {
 
     @IBOutlet weak var trackpadJoystick: TrackpadJoystick?
     
-    // TODO: [x] add checks for all optionals
     let sock: Socket? = try? Socket.create(family: .inet, type: .datagram, proto: .udp)
     let addr: Socket.Address? = Socket.createAddress(for: "192.168.1.238", on: 1200)
     
@@ -75,12 +74,31 @@ class ViewController: NSViewController {
     
     
     override func viewDidDisappear() {
+        
         self.joystickTimer.invalidate()
         os_log(OSLogType.debug, "Points sent: %d", self.pointsWereSentCounter)
 
+        // Unwrap the optionals
         guard let sock = self.sock else {
             os_log(OSLogType.error, "Socket is invalid")
             return
+        }
+        guard let addr = self.addr else {
+            os_log(OSLogType.error, "Address is invalid")
+            return
+        }
+
+        let c = CenteredCoords(x: 0.0, y: 0.0)
+        while true {
+            do {
+                try sock.write(from: [c.x, c.y], bufSize: 2*MemoryLayout<Float32>.size, to: addr)
+                break
+            } catch {
+                // Need this as error.localizedDescription doesn't contain useful information
+                let errorString = "\(error)"
+                os_log(OSLogType.error, "%s", errorString)
+                continue
+            }
         }
         sock.close()
 

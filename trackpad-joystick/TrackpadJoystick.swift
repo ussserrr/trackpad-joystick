@@ -170,8 +170,8 @@ class TrackpadJoystick: NSView {
             coordinatesDidUpdate = false
         }
         
-        let debugString = "Touch \(touch.identity) began at \(touch.normalizedPosition)"
-        os_log(OSLogType.default, "%s", debugString)
+//        let debugString = "Touch \(touch.identity) began at \(touch.normalizedPosition)"
+//        os_log(OSLogType.default, "%s", debugString)
     }
     
     override func touchesMoved(with event: NSEvent) {
@@ -183,8 +183,8 @@ class TrackpadJoystick: NSView {
             coordinatesDidUpdate = false
         }
 
-        let debugString = "Touch \(currentTouch.identity) moved to \(currentTouch.normalizedPosition)"
-        os_log(OSLogType.default, "%s", debugString)
+//        let debugString = "Touch \(currentTouch.identity) moved to \(currentTouch.normalizedPosition)"
+//        os_log(OSLogType.default, "%s", debugString)
     }
     
     override func touchesEnded(with event: NSEvent) {
@@ -197,8 +197,8 @@ class TrackpadJoystick: NSView {
             coordinatesDidUpdate = false
         }
 
-        let debugString = "Touch \(currentTouch.identity) ended at \(currentTouch.normalizedPosition)"
-        os_log(OSLogType.default, "%s", debugString)
+//        let debugString = "Touch \(currentTouch.identity) ended at \(currentTouch.normalizedPosition)"
+//        os_log(OSLogType.default, "%s", debugString)
     }
     
     // We do not expect the occurrence of this event during normal operation
@@ -239,12 +239,9 @@ class TrackpadJoystick: NSView {
     
     // TODO list:
     
+    // [ ]   ideal representation - transparent overlay (with touch circle) on top of user UI
     // [ ]   do not rely on any external UI elements - define them internally instead or remove entirely
-    // [ ]   animate using Core Animation
-    // [x]   configuration: on/off logs
-    // [x]   coordinates getter
-    // [x]   add methods for converting coordinates (for drawing and other tasks)
-    // [x]   add reset to zero position after releasing the stick
-    // [x]   add start (zero) zone (set as radius around (0.0, 0.0))
+    // [ ]   animate using Core Animation for speed increasing (and perhaps to solve previous task)
+    // [ ]   configuration: on/off logs
     
 }

@@ -37,4 +37,9 @@ let c = trackpadJoystick.centeredCoords
 print("x = \(c.x), y = \(c.y)")
 ```
 
-*Centered* means that the center of the trackpad is considered an origin point (0.0; 0.0) and the range for both X and Y axes is [-1.0; 1.0]. There are some another initialization and converting methods are available through the `CenteredCoords` interface such as `toNormalized()`, `toScreenCoords()`.
+*Centered* means that the center of the trackpad is considered an origin point `(0.0; 0.0)` and the range for both X and Y axes is `[-1.0; 1.0]`. There are some another initialization and converting methods are available through the `CenteredCoords` interface such as `toNormalized()`, `toScreenCoords()`.
+
+
+## TODOs
+
+Check for TODOs all over the code to get the insight of what would be great to do.
