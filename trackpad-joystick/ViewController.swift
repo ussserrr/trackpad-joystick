@@ -20,6 +20,8 @@ class ViewController: NSViewController {
     let sock: Socket? = try? Socket.create(family: .inet, type: .datagram, proto: .udp)
     let addr: Socket.Address? = Socket.createAddress(for: "192.168.1.238", on: 1200)
     
+    var joystickTimer = Timer()
+    
     var pointsWereSentCounter = 0
 
     
@@ -66,14 +68,22 @@ class ViewController: NSViewController {
                 inactiveStateIsSent = trackpadJoystick.state == .atOriginPoint ? true : false
             }
 
-            Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: timer_handler)
+            self.joystickTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: timer_handler)
             RunLoop.current.run()
         }
     }
     
     
     override func viewDidDisappear() {
+        self.joystickTimer.invalidate()
         os_log(OSLogType.debug, "Points sent: %d", self.pointsWereSentCounter)
+
+        guard let sock = self.sock else {
+            os_log(OSLogType.error, "Socket is invalid")
+            return
+        }
+        sock.close()
+
         super.viewDidDisappear()
     }
 

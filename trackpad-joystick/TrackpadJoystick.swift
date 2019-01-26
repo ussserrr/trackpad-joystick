@@ -64,7 +64,7 @@ struct CenteredCoords {
      Convert to screen `(width x height)` coordinates with the origin point at the bottom left corner of the trackpad.
      - Returns: Tuple of coordinates.
      */
-    func toScreenCoordinates() -> (x: CGFloat, y: CGFloat) {
+    func toScreenCoords() -> (x: CGFloat, y: CGFloat) {
         // Use struct as a workaround to have local static constants
         struct screen {
             static let width = NSScreen.main!.frame.width
@@ -118,7 +118,10 @@ class TrackpadJoystick: NSView {
         NSCursor.hide()  // hide the mouse cursor
         self.setFrameSize(NSSize(width: mainScreen.frame.width, height: mainScreen.frame.height))
 
-        infoLabel.stringValue = "Welcome to Trackpad Joystick"
+        infoLabel.stringValue = """
+        Welcome to Trackpad Joystick
+        Press 'Q' to exit
+        """
     }
     
     
@@ -135,7 +138,7 @@ class TrackpadJoystick: NSView {
             let c = centeredCoords
             coordsLabel.stringValue = "x = \(c.x)\ny = \(c.y)"
 
-            let (x, y) = c.toScreenCoordinates()
+            let (x, y) = c.toScreenCoords()
             touchCircle.removeAllPoints()
             touchCircle = NSBezierPath(ovalIn: NSRect(x: x-(touchCircleDiameter/2.0), y: y-(touchCircleDiameter/2.0), width: touchCircleDiameter, height: touchCircleDiameter))
             touchCircleColor.set()
@@ -217,6 +220,19 @@ class TrackpadJoystick: NSView {
             case .touchWasCancelled:
                 return CenteredCoords(x: Float32(-M_E), y: Float32(-M_E))
             }
+        }
+    }
+    
+    
+    override func keyDown(with event: NSEvent) {
+        if event.keyCode == 12 {  // 12 is a code of a 'Q' key
+            NSCursor.unhide()
+            self.exitFullScreenMode(options: nil)
+            guard let parent = self.superview?.window else {
+                print("No parent")
+                return
+            }
+            parent.performClose(self)
         }
     }
     
