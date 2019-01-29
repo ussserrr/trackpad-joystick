@@ -89,7 +89,7 @@ class ViewController: NSViewController {
         }
 
         let c = CenteredCoords(x: 0.0, y: 0.0)
-        while true {
+        for _ in 0..<10 {  // tries to attempt
             do {
                 try sock.write(from: [c.x, c.y], bufSize: 2*MemoryLayout<Float32>.size, to: addr)
                 break

@@ -110,6 +110,20 @@ class TrackpadJoystick: NSView {
     let stickStartPositionRadius: Float = 0.2
     
     
+    var centeredCoords: CenteredCoords {
+        get {
+            switch state {
+            case .atOriginPoint:
+                return CenteredCoords(x: 0.0, y: 0.0)
+            case .handlingTouch:
+                return CenteredCoords(from: currentTouch)
+            case .touchWasCancelled:
+                return CenteredCoords(x: Float32(-M_E), y: Float32(-M_E))
+            }
+        }
+    }
+    
+    
     // Initialization
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -207,20 +221,6 @@ class TrackpadJoystick: NSView {
 
         let debugString = "Touch \(Array(event.touches(matching: .cancelled, in: self))[0].identity) was cancelled"
         os_log(OSLogType.error, "%s", debugString)
-    }
-    
-    
-    var centeredCoords: CenteredCoords {
-        get {
-            switch state {
-            case .atOriginPoint:
-                return CenteredCoords(x: 0.0, y: 0.0)
-            case .handlingTouch:
-                return CenteredCoords(from: currentTouch)
-            case .touchWasCancelled:
-                return CenteredCoords(x: Float32(-M_E), y: Float32(-M_E))
-            }
-        }
     }
     
     

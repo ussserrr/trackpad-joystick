@@ -4,7 +4,7 @@
 
 Example of how to use MacBook's or Apple Magic Trackpad not for a positioning of the cursor but for getting an absolute coordinates of touches - i.e. as a joystick.
 
-The project ([`TrackpadJoystick.swift`](/trackpad-joystick/TrackpadJoystick.swift)) is combined with a simple example ([`ViewController.swift`](/trackpad-joystick/ViewController.swift)) - sending a coordinates over an UDP socket.
+The project ([`TrackpadJoystick.swift`](/trackpad-joystick/TrackpadJoystick.swift)) is combined with a simple example ([`ViewController.swift`](/trackpad-joystick/ViewController.swift)) - sending a coordinates over an UDP socket. See [wifi-car](https://github.com/ussserrr/wifi-car) for the counterpart.
 
 
 ## Overview
@@ -37,7 +37,7 @@ let c = trackpadJoystick.centeredCoords
 print("x = \(c.x), y = \(c.y)")
 ```
 
-*Centered* means that the center of the trackpad is considered an origin point `(0.0; 0.0)` and the range for both X and Y axes is `[-1.0; 1.0]`. There are some another initialization and converting methods are available through the `CenteredCoords` interface such as `toNormalized()`, `toScreenCoords()`.
+*Centered* means that the center of the trackpad is considered an origin point `(0.0; 0.0)` and the range for both X and Y axes is `[-1.0; 1.0]`. There are some another initialization and converting methods available through the `CenteredCoords` interface such as `toNormalized()`, `toScreenCoords()`.
 
 
 ## TODOs
