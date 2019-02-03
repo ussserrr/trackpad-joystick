@@ -1,4 +1,4 @@
-# Trackpad Joystick
+![title](/title.png)
 
 ![demo](/demo.gif)
 

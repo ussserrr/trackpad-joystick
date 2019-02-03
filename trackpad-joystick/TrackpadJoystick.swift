@@ -133,6 +133,7 @@ class TrackpadJoystick: NSView {
         self.setFrameSize(NSSize(width: mainScreen.frame.width, height: mainScreen.frame.height))
 
         infoLabel.stringValue = """
+        🕹
         Welcome to Trackpad Joystick
         Press 'Q' to exit
         """

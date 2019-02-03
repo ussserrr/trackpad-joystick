@@ -67,7 +67,7 @@ class ViewController: NSViewController {
                 inactiveStateIsSent = trackpadJoystick.state == .atOriginPoint ? true : false
             }
 
-            self.joystickTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true, block: timer_handler)
+            self.joystickTimer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true, block: timer_handler)
             RunLoop.current.run()
         }
     }
